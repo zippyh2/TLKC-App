@@ -4,13 +4,13 @@
   "description": "Select interchangeable needle tips, cables, and adaptors with instant compatibility checks.",
   "icons": [
     {
-      "src": "/tlkc-logo-192.png",
+      "src": "/img/tlkc-logo-192.png",
       "type": "image/png",
       "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/tlkc-logo-512.png",
+      "src": "/img/tlkc-logo-512.png",
       "type": "image/png",
       "sizes": "512x512",
       "purpose": "any"
@@ -19,6 +19,6 @@
   "start_url": "/",
   "background_color": "#f4f6f9",
   "theme_color": "#960057",
-  "display": "minimal-ui",
+  "display": "standalone",
   "orientation": "portrait"
 }

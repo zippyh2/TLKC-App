@@ -1,13 +1,32 @@
-const CACHE_NAME = 'chiaogoo-workspace-v1';
+const CACHE_PREFIX = 'chiaogoo-workspace-';
+const CACHE_NAME = `${CACHE_PREFIX}v2`;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
+  '/style.css',
   '/manifest.json',
-  '/tlkc-logo-192.png',
-  '/tlkc-logo-512.png'
+  '/sw.js',
+  '/img/tlkc-logo-192.png',
+  '/img/tlkc-logo-512.png',
+  '/favicon.ico',
+  '/icon.png',
+  '/icon.svg',
+  '/js/apiQuery.js',
+  '/js/basket/basket.js',
+  '/js/basket/basketStorage.js',
+  '/js/catalogue/data.js',
+  '/js/checkout/shopify.js',
+  '/js/compatibility/compatibility.js',
+  '/js/compatibility/compatibilityFormatting.js',
+  '/js/constants.js',
+  '/js/main.js',
+  '/js/state.js',
+  '/js/ui/accessories.js',
+  '/js/ui/cables.js',
+  '/js/ui/compatibilityModal.js',
+  '/js/ui/tips.js'
 ];
 
-// Install: Open cache and store critical structural files
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,39 +36,54 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate: Purge old cache buckets if you push updates later
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames.map((cache) => {
-          if (cache !== CACHE_NAME) {
+          if (cache.startsWith(CACHE_PREFIX) && cache !== CACHE_NAME) {
             return caches.delete(cache);
           }
         })
-      );
+      ).then(() => self.clients.claim());
     })
   );
-  self.clients.claim();
 });
 
-// Fetch: Attempt network first, fallback to cached assets if offline
+function isAppAsset(request) {
+  if (request.method !== 'GET') return false;
+
+  const url = new URL(request.url);
+  if (url.origin !== self.location.origin) return false;
+
+  return url.pathname === '/' ||
+    /^\/(?:index\.html|style\.css|manifest\.json|site\.webmanifest|favicon\.ico|icon\.(?:png|svg))$/.test(url.pathname) ||
+    /^\/(?:js\/.*\.js|img\/.*\.(?:png|svg))$/.test(url.pathname);
+}
+
 self.addEventListener('fetch', (event) => {
+  if (!isAppAsset(event.request)) return;
+
   event.respondWith(
-    fetch(event.request)
-      .then((networkResponse) => {
-        // If internet is live and response is healthy, update the local cache
-        if (networkResponse && networkResponse.status === 200) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseClone);
-          });
+    (async () => {
+      try {
+        const networkResponse = await fetch(event.request);
+        if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
+          const cache = await caches.open(CACHE_NAME);
+          await cache.put(event.request, networkResponse.clone());
         }
         return networkResponse;
-      })
-      .catch(() => {
-        // If connection fails, seamlessly serve the last working version from cache
-        return caches.match(event.request);
-      })
+      } catch {
+        const cache = await caches.open(CACHE_NAME);
+        const cachedResponse = await cache.match(event.request);
+        if (cachedResponse) return cachedResponse;
+
+        if (event.request.mode === 'navigate') {
+          return cache.match('/index.html');
+        }
+
+        return Response.error();
+      }
+    })()
   );
 });
