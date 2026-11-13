@@ -3,7 +3,7 @@
 //   continueToShopifyAnyway
 
 import {saveProjectBasketToStorage} from "../basket/basketStorage.js";
-import {validateProjectBasketCompatibility} from "../compatibility/compatibility.js";
+import {analyzeProjectBasketCompatibility} from "../compatibility/compatibility.js";
 import {closeCompatibilityModal, openCompatibilityModal} from "../ui/compatibilityModal.js";
 
 import {state} from "../state.js";
@@ -12,10 +12,15 @@ import {SHOPIFY_CART_URL} from "../constants.js";
 export function sendProjectToShopify() {
   if (state.projectBasket.length === 0) return;
 
-  const validation = validateProjectBasketCompatibility();
+  const analysis = analyzeProjectBasketCompatibility();
 
-  if (!validation.ok) {
-    openCompatibilityModal(validation.messages, validation.missingAdaptorKeys);
+  if (!analysis.ok) {
+    openCompatibilityModal(analysis.messages, analysis.missingAdaptorKeys);
+    return;
+  }
+
+  if (analysis.hasTipsAndCables) {
+    openCompatibilityModal([], [], true);
     return;
   }
 

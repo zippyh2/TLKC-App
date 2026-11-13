@@ -20,7 +20,7 @@ import {
 } from "../compatibility/compatibility.js";
 
 
-export function openCompatibilityModal(messages, missingAdaptorKeys = []) {
+export function openCompatibilityModal(messages, missingAdaptorKeys = [], isCompatible = false) {
   const overlay = document.getElementById("compatibilityModalOverlay");
   const introEl = document.getElementById("compatibilityModalIntro");
   const coverageEl = document.getElementById("compatibilityModalCoverage");
@@ -31,13 +31,17 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = []) {
 
   const hasMissingAdaptors = missingAdaptorKeys.length > 0;
 
-  introEl.textContent = hasMissingAdaptors
-    ? "Some parts in your bundle may need an adaptor."
-    : "Some parts in your bundle may not fit together.";
+  introEl.textContent = isCompatible
+    ? "Your selected tips and cables are compatible."
+    : hasMissingAdaptors
+      ? "Some parts in your bundle may need an adaptor."
+      : "Some parts in your bundle may not fit together.";
 
   renderCompatibilityCoverageSummary(coverageEl);
 
-  messageEl.textContent = messages.join("\n\n");
+  messageEl.textContent = isCompatible
+    ? "Your selection is ready to continue to Shopify."
+    : messages.join("\n\n");
 
   actionsEl.innerHTML = missingAdaptorKeys.map(adaptorKey => `
           <button type="button"
@@ -49,21 +53,23 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = []) {
 
   renderCompatibilityDetails();
 
-  noteEl.style.display = "";
   const analysis = analyzeProjectBasketCompatibility();
   const hasImpossibleOrUnusedItems = analysis.unusedItems.length > 0 ||
     analysis.pairResults.some(pair => pair.status === "fail");
 
-  noteEl.style.display = "";
-
-  if (hasMissingAdaptors && hasImpossibleOrUnusedItems) {
-    noteEl.textContent = "If you already own the required adaptor(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
-  } else if (hasMissingAdaptors) {
-    noteEl.textContent = "If you already own the required adaptor(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+  if (isCompatible) {
+    noteEl.style.display = "none";
   } else {
-    noteEl.textContent = "Some selected parts may be for use with other items you already own.\n\nCheck the full compatibility details if you are unsure.";
+    noteEl.style.display = "";
+    if (hasMissingAdaptors && hasImpossibleOrUnusedItems) {
+      noteEl.textContent = "If you already own the required adaptor(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+    } else if (hasMissingAdaptors) {
+      noteEl.textContent = "If you already own the required adaptor(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+    } else {
+      noteEl.textContent = "Some selected parts may be for use with other items you already own.\n\nCheck the full compatibility details if you are unsure.";
+    }
   }
-  continueBtn.textContent = "Continue anyway";
+  continueBtn.textContent = isCompatible ? "Continue" : "Continue anyway";
 
   const detailsEl = document.getElementById("compatibilityDetails");
   const detailsToggleEl = document.getElementById("compatibilityDetailsToggle");
