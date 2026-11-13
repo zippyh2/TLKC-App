@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <!-- Mobile PWA Core Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="KnitConfig">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="https://www.thelittleknittingcompany.co.uk/cdn/shop/files/the-little-knitting-company-logo.png?v=1756889583">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ChiaoGoo Project Workspace Builder</title>
+    <link rel="stylesheet" href="./style.css">
+
+
+</head>
+<body>
+
+<div class="workspace-card">
+  <h2><a href="https://www.thelittleknittingcompany.co.uk/" target="_blank">The little knitting Company</a></h2>
+  <h2>Tip & Cable Match</h2>
+
+  <p class="workspace-intro">
+    Choose your ChiaoGoo tips, cables and accessories. We’ll check they work together before you add them to your basket.
+  </p>
+
+  <!-- SECTION A: NEEDLE TIPS DRAWER -->
+  <div id="tips-section-group">
+    <span class="carousel-label">Select Needle Family:</span>
+    <div class="carousel-wrapper" id="carousel-tip-styles">
+      <div id="tipstyle-twist" class="carousel-item tip-style-btn selected" data-style="TWIST">TWIST (Steel)</div>
+      <div id="tipstyle-Forté" class="carousel-item tip-style-btn" data-style="Forté">Forté (Carbon Fiber)</div>
+      <div id="tipstyle-spin" class="carousel-item tip-style-btn" data-style="SPIN">SPIN (Bamboo)</div>
+      <div id="tipstyle-quads" class="carousel-item tip-style-btn" data-style="QUADS">QUADS (SS Lace)</div>
+    </div>
+
+    <span class="carousel-label">Select Tip Length:</span>
+    <div class="carousel-wrapper" id="carousel-tip-lengths"></div>
+
+    <span class="carousel-label">Select Tip Size (Diameter):</span>
+    <div class="control-row">
+      <select id="tipDiameter"></select>
+      <select id="tipQty" class="qty-select">
+        <option value="1">1 Pair</option><option value="2">2 Pairs</option><option value="3">3 Pairs</option>
+      </select>
+      <button id="addTipBtn" class="add-action-btn">+ Add Tip</button>
+    </div>
+  </div>
+
+  <!-- SECTION B: CABLES DRAWER -->
+  <div id="cables-section-group">
+    <span class="carousel-label">Select Cable Type:</span>
+    <div class="carousel-wrapper" id="carousel-cable-types">
+      <div id="cabletype-swiv300" class="carousel-item cable-type-btn" data-type="SWIV360">SWIV360 (Silver)</div>
+      <div id="cabletype-red" class="carousel-item cable-type-btn selected" data-type="Red Lace">Red Lace (Twist)</div>
+      <div id="cabletype-blue" class="carousel-item cable-type-btn" data-type="Blue X-Flex">Blue X-Flex</div>
+      <div id="cabletype-spin" class="carousel-item cable-type-btn" data-type="SPIN Swivel Nylon">SPIN Swivel</div>
+    </div>
+
+    <span class="carousel-label">Select Cable Length:</span>
+    <div class="control-row">
+      <select id="cableLength"></select>
+      <select id="cableQty" class="qty-select">
+        <option value="1">1 Qty</option><option value="2">2 Qty</option><option value="3">3 Qty</option>
+      </select>
+      <button id="addCableBtn" class="add-action-btn">+ Add Cable</button>
+    </div>
+  </div>
+
+  <!-- SECTION C: OPTIONAL ACCESSORIES -->
+  <div id="accessories-section-group">
+    <span class="carousel-label">Upgrade your selection by including these:</span>
+    <div class="accessory-action-grid">
+      <button type="button" id="openAdapterModalBtn" class="accessory-action-btn">Add Adaptor</button>
+      <button type="button" id="openUpsellModalBtn" class="accessory-action-btn">Add Cable Swivels</button>
+    </div>
+  </div>
+
+  <!-- LIVE PROJECT CART PREVIEW BOX -->
+  <div class="basket-container">
+    <div class="basket-title">
+      <span>Your Selection Custom Bundle</span>
+      <span id="basket-count" style="font-size:13px; background:var(--brand); color:#FFF; padding:2px 8px; border-radius:10px;">0 Items</span>
+    </div>
+    <ul id="project-basket-list" class="basket-list">
+      <li class="basket-item" style="color:#888; justify-content:center; font-style:italic;">Your workspace is empty. Choose components above to start building.</li>
+    </ul>
+  </div>
+
+  <!-- MAIN ACTION TRANSIT BUTTON -->
+  <button id="checkoutBtn" class="checkout-btn" disabled>🛒 Send Selection to Store Basket</button>
+</div>
+
+<!-- BRANDED COMPATIBILITY WARNING MODAL -->
+<div id="compatibilityModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="compatibilityModalTitle">
+  <div class="compatibility-modal">
+    <div class="compatibility-modal-header" id="compatibilityModalTitle">Adaptor check</div>
+    <div class="compatibility-modal-body">
+      <strong id="compatibilityModalIntro">Some parts in your selection may need an adaptor.</strong>
+      <div id="compatibilityModalCoverage" class="compatibility-modal-good-news" style="display:none;"></div>
+      <div id="compatibilityModalMessage" class="compatibility-modal-message"></div>
+
+      <button id="compatibilityDetailsToggle" type="button" class="compatibility-details-toggle">Show full compatibility details</button>
+      <div id="compatibilityDetails" class="compatibility-details"></div>
+
+      <p id="compatibilityModalNote" class="compatibility-modal-note">
+        If you already own the required adaptor(s), you can continue. Otherwise, add them here or go back to adjust your selection.
+      </p>
+      <div id="missingAdaptorActions" class="missing-adaptor-actions"></div>
+    </div>
+    <div class="compatibility-modal-actions">
+      <button type="button" id="closeCompatibilityModalBtn" class="modal-btn modal-btn-secondary">Go back</button>
+      <button id="compatibilityContinueBtn" type="button" class="modal-btn modal-btn-primary">Continue anyway</button>
+    </div>
+  </div>
+</div>
+
+<!-- ACCESSORY SELECTION MODAL -->
+<div id="accessoryModalOverlay" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="accessoryModalTitle">
+  <div class="compatibility-modal">
+    <div class="compatibility-modal-header" id="accessoryModalTitle">Add accessory</div>
+    <div class="compatibility-modal-body">
+      <strong id="accessoryModalIntro">Choose an accessory for your selection.</strong>
+      <div id="accessoryModalOptions" class="accessory-modal-options"></div>
+      <div class="accessory-modal-qty-row">
+        <select id="accessoryModalQty" class="qty-select">
+          <option value="1">1 Qty</option><option value="2">2 Qty</option><option value="3">3 Qty</option>
+        </select>
+        <button type="button" id="addSelectedAccessoryBtn" class="add-action-btn">+ Add to Selection</button>
+      </div>
+    </div>
+    <div class="compatibility-modal-actions">
+      <button type="button" id="closeAccessoryModalBtn" class="modal-btn modal-btn-secondary">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="./js/main.js"></script>
+
+</body>
+</html>
+
+
