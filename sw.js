@@ -1,16 +1,13 @@
 const CACHE_PREFIX = 'chiaogoo-workspace-';
-const CACHE_NAME = `${CACHE_PREFIX}v2`;
+const CACHE_NAME = `${CACHE_PREFIX}v3`;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/style.css',
+  '/css/style.css',
   '/manifest.json',
   '/sw.js',
   '/img/tlkc-logo-192.png',
   '/img/tlkc-logo-512.png',
-  '/favicon.ico',
-  '/icon.png',
-  '/icon.svg',
   '/js/apiQuery.js',
   '/js/basket/basket.js',
   '/js/basket/basketStorage.js',
@@ -57,7 +54,7 @@ function isAppAsset(request) {
   if (url.origin !== self.location.origin) return false;
 
   return url.pathname === '/' ||
-    /^\/(?:index\.html|style\.css|manifest\.json|site\.webmanifest|favicon\.ico|icon\.(?:png|svg))$/.test(url.pathname) ||
+    /^\/(?:index\.html|css\/style\.css|manifest\.json)$/.test(url.pathname) ||
     /^\/(?:js\/.*\.js|img\/.*\.(?:png|svg))$/.test(url.pathname);
 }
 
