@@ -24,7 +24,7 @@ export function initInstallPrompt() {
   if (isStandalone) return;
 
   // Respect user preference if dismissed in the active session
-  if (sessionStorage.getItem('pwa_prompt_dismissed') === 'true') return;
+  if (localStorage.getItem('pwa_prompt_dismissed') === 'true') return;
 
   const ua = window.navigator.userAgent;
   const isIos = /iphone|ipad|ipod/i.test(ua);
@@ -50,13 +50,22 @@ export function initInstallPrompt() {
   // 3. Firefox Android instructional flow
   if (isFirefoxAndroid) {
     if (descEl) {
-      descEl.textContent = 'Tap the address bar install icon or menu (⋮) and select "Install".';
+      descEl.textContent = 'Tap the address bar install icon or menu (⋮) and select "More" -> "Add to Home screen").';
     }
     if (installBtn) {
       installBtn.style.display = 'none';
     }
     bannerElement.style.display = 'flex';
   }
+
+  if (isFirefoxAndroid || (isIos && isSafari)) {
+  setTimeout(() => {
+    if (bannerElement) {
+      bannerElement.style.display = 'none';
+      localStorage.setItem('pwa_prompt_dismissed', 'true');
+    }
+  }, 10000);
+}
 
   // Handle Chromium programmatic install
   if (installBtn) {
@@ -73,7 +82,7 @@ export function initInstallPrompt() {
   if (dismissBtn) {
     dismissBtn.addEventListener('click', () => {
       bannerElement.style.display = 'none';
-      sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+      localStorage.setItem('pwa_prompt_dismissed', 'true');
     });
   }
 }
