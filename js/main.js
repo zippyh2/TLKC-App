@@ -17,6 +17,7 @@ import {addItemToProjectBasket,
         removeBasketItem,
         renderProjectBasketList
       } from "./basket/basket.js";
+import {initInstallPrompt} from "./ui/installPrompt.js";
 
 
 
@@ -116,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // --- 4. DEFAULT INITIALIZATION RUN ---
 function bootWorkspace() {
+  initInstallPrompt()
   selectTipStyle("TWIST");
   setTipLength("5in");
   updateCableDropdown();
