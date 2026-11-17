@@ -38,7 +38,7 @@ function renderTipLengths() {
   populateTipDiameters();
 }
 
-async function populateTipDiameters() {
+export async function populateTipDiameters() {
   const diaMenu = document.getElementById("tipDiameter");
 
 
@@ -84,24 +84,41 @@ async function populateTipDiameters() {
       };
     });
 
+    const defaultTip = tipsWithStock.find(t => t.inStock && parseFloat(t.size) >= 4);
+
     diaMenu.innerHTML = tipsWithStock.map(t => `
             <option
               value="${t.id}"
               data-conn="${t.conn}"
               ${t.inStock ? "" : "disabled"}
+              ${defaultTip && t.id === defaultTip.id ? "selected" : ""}
             >
               ${t.size} (${t.conn})${t.inStock ? "" : " - Out of stock"}
             </option>
         `).join("");
 
+    if (defaultTip) {
+      diaMenu.value = defaultTip.id;
+    }
+
   } catch (error) {
     console.error("[populateTipDiameters] unexpected failure:", error);
 
+    const defaultTip = targetTips.find(t => parseFloat(t.size) >= 4);
+
     diaMenu.innerHTML = targetTips.map(t => `
-            <option value="${t.id}" data-conn="${t.conn}">
+            <option
+              value="${t.id}"
+              data-conn="${t.conn}"
+              ${defaultTip && t.id === defaultTip.id ? "selected" : ""}
+            >
               ${t.size} (${t.conn}) - Stock check unavailable
             </option>
         `).join("");
+
+    if (defaultTip) {
+      diaMenu.value = defaultTip.id;
+    }
   } finally {
     diaMenu.disabled = false;
   }
