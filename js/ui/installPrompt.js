@@ -1,59 +1,78 @@
 let deferredInstallPrompt = null;
+let bannerElement = null;
+
+// 1. Capture Chromium-based beforeinstallprompt immediately
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+
+  if (bannerElement && sessionStorage.getItem('pwa_prompt_dismissed') !== 'true') {
+    bannerElement.style.display = 'flex';
+  }
+});
 
 export function initInstallPrompt() {
-  const banner = document.getElementById('installPromptBanner');
+  bannerElement = document.getElementById('installPromptBanner');
   const installBtn = document.getElementById('installAppBtn');
   const dismissBtn = document.getElementById('dismissInstallBtn');
   const descEl = document.getElementById('installBannerDesc');
 
-  if (!banner) return;
+  if (!bannerElement) return;
 
-  // Do not prompt if already running as an installed PWA
+  // Avoid unnecessary UI friction if already running in standalone mode
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if (isStandalone) return;
 
-  // Check if previously dismissed in this session
+  // Respect user preference if dismissed in the active session
   if (sessionStorage.getItem('pwa_prompt_dismissed') === 'true') return;
 
-  // 1. Android / Chromium: capture beforeinstallprompt
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    banner.style.display = 'flex';
-  });
+  const ua = window.navigator.userAgent;
+  const isIos = /iphone|ipad|ipod/i.test(ua);
+  const isSafari = /^((?!chrome|android).)*safari/i.test(ua);
+  const isFirefoxAndroid = /android/i.test(ua) && /firefox/i.test(ua);
 
-  // 2. iOS Safari detection
-  const isIos = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
-  const isSafari = /^((?!chrome|android).)*safari/i.test(window.navigator.userAgent);
+  // 1. Android Chromium flow
+  if (deferredInstallPrompt) {
+    bannerElement.style.display = 'flex';
+  }
 
-  if (isIos && isSafari && !isStandalone) {
+  // 2. iOS Safari instructional flow
+  if (isIos && isSafari) {
     if (descEl) {
       descEl.textContent = 'Tap the Share button (⎋) and select "Add to Home Screen" (➕).';
     }
     if (installBtn) {
-      installBtn.style.display = 'none'; // iOS requires manual Share menu step
+      installBtn.style.display = 'none';
     }
-    banner.style.display = 'flex';
+    bannerElement.style.display = 'flex';
   }
 
-  // Handle Install button click (Android)
+  // 3. Firefox Android instructional flow
+  if (isFirefoxAndroid) {
+    if (descEl) {
+      descEl.textContent = 'Tap the address bar install icon or menu (⋮) and select "Install".';
+    }
+    if (installBtn) {
+      installBtn.style.display = 'none';
+    }
+    bannerElement.style.display = 'flex';
+  }
+
+  // Handle Chromium programmatic install
   if (installBtn) {
     installBtn.addEventListener('click', async () => {
       if (!deferredInstallPrompt) return;
-      banner.style.display = 'none';
+      bannerElement.style.display = 'none';
       deferredInstallPrompt.prompt();
       const choice = await deferredInstallPrompt.userChoice;
-      if (choice.outcome === 'accepted') {
-        console.log('User installed the PWA');
-      }
       deferredInstallPrompt = null;
     });
   }
 
-  // Handle Dismiss button click
+  // Handle dismissal
   if (dismissBtn) {
     dismissBtn.addEventListener('click', () => {
-      banner.style.display = 'none';
+      bannerElement.style.display = 'none';
       sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     });
   }
