@@ -1,6 +1,6 @@
 export const ADAPTER_LABELS = {
-  Large_to_Small: "Large to Small Adaptor",
-  Small_to_Mini: "Small to Mini Adaptor",
+  Large_to_Small: "Large to Small",
+  Small_to_Mini: "Small to Mini",
 };
 
 export const UPSELL_LABELS = {

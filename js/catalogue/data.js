@@ -187,19 +187,7 @@ export const DB_CABLES = [
   {type: "Blue X-Flex", length: "2in (Set of 3)", id: "50788906205526", conn: "Small"},
   {type: "Blue X-Flex", length: "5in", id: "50788906238294", conn: "Small"},
   {type: "Blue X-Flex", length: "6in", id: "50788906271062", conn: "Small"},
-  {type: "Blue X-Flex", length: "8in", id: "50788906303830", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "8in", id: "50788906664278", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "14in", id: "50788906697046", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "22in", id: "50788906729814", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "30in", id: "50788906762582", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "37in", id: "50788906795350", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "50in", id: "50788906828118", conn: "Small"},
-  {type: "SPIN Swivel Nylon", length: "8in", id: "50788906860886", conn: "Large"},
-  {type: "SPIN Swivel Nylon", length: "14in", id: "50788906893654", conn: "Large"},
-  {type: "SPIN Swivel Nylon", length: "22in", id: "50788906926422", conn: "Large"},
-  {type: "SPIN Swivel Nylon", length: "30in", id: "50788906959190", conn: "Large"},
-  {type: "SPIN Swivel Nylon", length: "37in", id: "50788906991958", conn: "Large"},
-  {type: "SPIN Swivel Nylon", length: "50in", id: "50788907024726", conn: "Large"}];
+  {type: "Blue X-Flex", length: "8in", id: "50788906303830", conn: "Small"}];
 
 export const ADAPTERS = {
   "Large_to_Small": "50788912955734",
