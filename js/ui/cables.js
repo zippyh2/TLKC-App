@@ -52,23 +52,40 @@ export async function updateCableDropdown() {
       };
     });
 
+    const defaultCable = cablesWithStock.find(c => c.inStock && parseFloat(c.length) >= 5);
+
     cableMenu.innerHTML = cablesWithStock.map(c => `
               <option
                 value="${c.id}"
                 data-conn="${c.conn}"
                 ${c.inStock ? "" : "disabled"}
+                ${defaultCable && c.id === defaultCable.id ? "selected" : ""}
               >
                 ${c.length} (${c.conn})${c.inStock ? "" : " - Out of stock"}
               </option>
           `).join("");
+
+    if (defaultCable) {
+      cableMenu.value = defaultCable.id;
+    }
   } catch (error) {
     console.error("[updateCableDropdown] unexpected failure:", error);
 
+    const defaultCable = availableCables.find(c => parseFloat(c.length) >= 5);
+
     cableMenu.innerHTML = availableCables.map(c => `
-              <option value="${c.id}" data-conn="${c.conn}">
+              <option
+                value="${c.id}"
+                data-conn="${c.conn}"
+                ${defaultCable && c.id === defaultCable.id ? "selected" : ""}
+              >
                 ${c.length} (${c.conn}) - Stock check unavailable
               </option>
           `).join("");
+
+    if (defaultCable) {
+      cableMenu.value = defaultCable.id;
+    }
   } finally {
     cableMenu.disabled = false;
   }
