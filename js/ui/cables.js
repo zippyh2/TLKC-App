@@ -2,7 +2,7 @@
 //   updateCableDropdown
 
 import {state} from "../state.js";
-import {DB_CABLES} from "../catalogue/data.js";
+import {DB_CABLES, DB_TIPS} from "../catalogue/data.js";
 import {checkStocks} from "../apiQuery.js";
 
 
@@ -52,7 +52,16 @@ export async function updateCableDropdown() {
       };
     });
 
-    const defaultCable = cablesWithStock.find(c => c.inStock && parseFloat(c.length) >= 5);
+    const tipMenu = document.getElementById("tipDiameter");
+    const selectedTip = tipMenu && tipMenu.value
+      ? DB_TIPS.find(t => t.id === tipMenu.value)
+      : null;
+
+    const defaultCable = cablesWithStock.find(c =>
+      c.inStock &&
+      parseFloat(c.length) >= 5 &&
+      (!selectedTip || c.conn === selectedTip.conn)
+    ) || cablesWithStock.find(c => c.inStock && parseFloat(c.length) >= 5);
 
     cableMenu.innerHTML = cablesWithStock.map(c => `
               <option
@@ -71,7 +80,15 @@ export async function updateCableDropdown() {
   } catch (error) {
     console.error("[updateCableDropdown] unexpected failure:", error);
 
-    const defaultCable = availableCables.find(c => parseFloat(c.length) >= 5);
+    const tipMenu = document.getElementById("tipDiameter");
+    const selectedTip = tipMenu && tipMenu.value
+      ? DB_TIPS.find(t => t.id === tipMenu.value)
+      : null;
+
+    const defaultCable = availableCables.find(c =>
+      parseFloat(c.length) >= 5 &&
+      (!selectedTip || c.conn === selectedTip.conn)
+    ) || availableCables.find(c => parseFloat(c.length) >= 5);
 
     cableMenu.innerHTML = availableCables.map(c => `
               <option
