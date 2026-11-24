@@ -178,11 +178,11 @@ export function analyzeProjectBasketCompatibility() {
   analysis.messages = [];
 
   if (analysis.missingAdaptorKeys.includes("Large_to_Small")) {
-    analysis.messages.push("Some selected pairings need a Large to Small Adaptor.");
+    analysis.messages.push("Some selected pairings need a Large to Small Adapter.");
   }
 
   if (analysis.missingAdaptorKeys.includes("Small_to_Mini")) {
-    analysis.messages.push("Some selected pairings need a Small to Mini Adaptor.");
+    analysis.messages.push("Some selected pairings need a Small to Mini Adapter.");
   }
 
   if (impossibleCount > 0 && analysis.unusedItems.length === 0) {
@@ -212,12 +212,12 @@ export function analyzeProjectBasketCompatibility() {
   } else if (pairCount === 1 && adaptorNeededCount === 1) {
     analysis.summary = {
       type: "warning",
-      text: "This tip and cable combination is OK if you add, or already own, the recommended adaptor."
+      text: "This tip and cable combination is OK if you add, or already own, the recommended adapter."
     };
   } else if (pairCount === 1 && adaptorInBasketCount === 1) {
     analysis.summary = {
       type: "good",
-      text: "Good news: this tip and cable combination works with the adaptor in your basket."
+      text: "Good news: this tip and cable combination works with the adapter in your basket."
     };
   } else if (pairCount === 1 && directMatchCount === 1) {
     analysis.summary = {
@@ -227,12 +227,12 @@ export function analyzeProjectBasketCompatibility() {
   } else if (adaptorNeededCount > 0 && impossibleCount === 0) {
     analysis.summary = {
       type: "warning",
-      text: "Every selected tip and cable has a possible match, but some combinations need the recommended adaptor(s)."
+      text: "Every selected tip and cable has a possible match, but some combinations need the recommended adapter(s)."
     };
   } else if (adaptorInBasketCount > 0 && adaptorNeededCount === 0 && impossibleCount === 0) {
     analysis.summary = {
       type: "good",
-      text: "Good news: every selected tip and cable can be used with the adaptor(s) in your basket."
+      text: "Good news: every selected tip and cable can be used with the adapter(s) in your basket."
     };
   } else if (impossibleCount > 0 && unusedCount === 0) {
     analysis.summary = {
@@ -247,7 +247,7 @@ export function analyzeProjectBasketCompatibility() {
   } else {
     analysis.summary = {
       type: "good",
-      text: "Good news: every selected tip and cable can be used without adaptors."
+      text: "Good news: every selected tip and cable can be used without adapters."
     };
   }
 
@@ -290,8 +290,8 @@ function checkTipCableCompatibility(tipConn, cableConn, hasAdaptor = false) {
       ok: hasAdaptor,
       needsAdaptor: true,
       reason: hasAdaptor
-        ? "Compatible using adaptor(s)."
-        : "This combination needs adaptor(s)."
+        ? "Compatible using adapter(s)."
+        : "This combination needs adapter(s)."
     };
   }
 
@@ -299,7 +299,7 @@ function checkTipCableCompatibility(tipConn, cableConn, hasAdaptor = false) {
     return {
       ok: false,
       needsAdaptor: false,
-      reason: "The cable connector is larger than the tip connector, so this cannot be fixed with an adaptor."
+      reason: "The cable connector is larger than the tip connector, so this cannot be fixed with an adapter."
     };
   }
 

@@ -34,7 +34,7 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = [], isComp
   introEl.textContent = isCompatible
     ? "Your selected tips and cables are compatible."
     : hasMissingAdaptors
-      ? "Some parts in your bundle may need an adaptor."
+      ? "Some parts in your bundle may need an adapter."
       : "Some parts in your bundle may not fit together.";
 
   renderCompatibilityCoverageSummary(coverageEl);
@@ -62,9 +62,9 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = [], isComp
   } else {
     noteEl.style.display = "";
     if (hasMissingAdaptors && hasImpossibleOrUnusedItems) {
-      noteEl.textContent = "If you already own the required adaptor(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+      noteEl.textContent = "If you already own the required adapter(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
     } else if (hasMissingAdaptors) {
-      noteEl.textContent = "If you already own the required adaptor(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+      noteEl.textContent = "If you already own the required adapter(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
     } else {
       noteEl.textContent = "Some selected parts may be for use with other items you already own.\n\nCheck the full compatibility details if you are unsure.";
     }
@@ -109,7 +109,7 @@ export function updateCompatibilityModalAfterAdaptorChange() {
 
   if (validation.ok) {
     introEl.textContent = "Your adaptor check is sorted.";
-    messageEl.textContent = "Great — the required adaptor(s) have been added. This bundle is ready to continue.";
+    messageEl.textContent = "Great — the required adapter(s) have been added. This bundle is ready to continue.";
     actionsEl.innerHTML = "";
     noteEl.style.display = "none";
     continueBtn.textContent = "Continue";
@@ -121,12 +121,12 @@ export function updateCompatibilityModalAfterAdaptorChange() {
     messageEl.textContent = validation.messages.join("\n\n");
     actionsEl.innerHTML = "";
     noteEl.style.display = "";
-    noteEl.textContent = "This connector combination cannot be solved with an adaptor. Continue only if you are buying these parts for another project, or you already have other matching parts.";
+    noteEl.textContent = "";
     continueBtn.textContent = "Continue anyway";
     return;
   }
 
-  introEl.textContent = "Some parts in your bundle may need an adaptor.";
+  introEl.textContent = "Some parts in your bundle may need an adapter.";
   messageEl.textContent = validation.messages.join("\n\n");
 
   actionsEl.innerHTML = validation.missingAdaptorKeys.map(adaptorKey => `
@@ -143,9 +143,9 @@ export function updateCompatibilityModalAfterAdaptorChange() {
     refreshedAnalysis.pairResults.some(pair => pair.status === "fail");
 
   if (stillHasImpossibleOrUnusedItems) {
-    noteEl.textContent = "If you already own the required adaptor(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+    noteEl.textContent = "If you already own the required adapter(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
   } else {
-    noteEl.textContent = "If you already own the required adaptor(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
+    noteEl.textContent = "If you already own the required adapter(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your project bundle.";
   }
 
   continueBtn.textContent = "Continue anyway";

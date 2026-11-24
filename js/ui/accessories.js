@@ -22,8 +22,8 @@ export function openAccessoryModal(accessoryType) {
   qtyEl.value = "1";
 
   if (accessoryType === "ADAPTER") {
-    titleEl.textContent = "Add adaptor";
-    introEl.textContent = "Choose the Tip to Cable adaptor size you need.";
+    titleEl.textContent = "Add adapter";
+    introEl.textContent = "Choose the Tip to Cable adapter size you need.";
     optionsEl.innerHTML = Object.keys(ADAPTERS).map(adaptorKey => `
                 <button type="button"
                         class="accessory-modal-option ${adaptorKey === state.activeAccessoryModalKey ? 'selected' : ''}"
