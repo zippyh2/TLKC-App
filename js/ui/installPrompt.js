@@ -1,12 +1,16 @@
 let deferredInstallPrompt = null;
 let bannerElement = null;
 
+function isStandalone() {
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
 // 1. Capture Chromium-based beforeinstallprompt immediately
 window.addEventListener('beforeinstallprompt', (e) => {
   e.preventDefault();
   deferredInstallPrompt = e;
 
-  if (bannerElement && sessionStorage.getItem('pwa_prompt_dismissed') !== 'true') {
+  if (bannerElement && !isStandalone() && sessionStorage.getItem('pwa_prompt_dismissed') !== 'true') {
     bannerElement.style.display = 'flex';
   }
 });
@@ -20,11 +24,10 @@ export function initInstallPrompt() {
   if (!bannerElement) return;
 
   // Avoid unnecessary UI friction if already running in standalone mode
-  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-  if (isStandalone) return;
+  if (isStandalone()) return;
 
   // Respect user preference if dismissed in the active session
-  if (localStorage.getItem('pwa_prompt_dismissed') === 'true') return;
+  if (sessionStorage.getItem('pwa_prompt_dismissed') === 'true') return;
 
   const ua = window.navigator.userAgent;
   const isIos = /iphone|ipad|ipod/i.test(ua);
@@ -62,7 +65,7 @@ export function initInstallPrompt() {
   setTimeout(() => {
     if (bannerElement) {
       bannerElement.style.display = 'none';
-      localStorage.setItem('pwa_prompt_dismissed', 'true');
+      sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     }
   }, 10000);
 }
@@ -82,7 +85,7 @@ export function initInstallPrompt() {
   if (dismissBtn) {
     dismissBtn.addEventListener('click', () => {
       bannerElement.style.display = 'none';
-      localStorage.setItem('pwa_prompt_dismissed', 'true');
+      sessionStorage.setItem('pwa_prompt_dismissed', 'true');
     });
   }
 }
