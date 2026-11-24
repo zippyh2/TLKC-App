@@ -20,7 +20,7 @@ export function renderProjectBasketList() {
   const checkoutBtn = document.getElementById("checkoutBtn");
 
   if (state.projectBasket.length === 0) {
-    listEl.innerHTML = `<li class="basket-item" style="color:#888; justify-content:center; font-style:italic;">Your workspace is empty. Choose components above to start building.</li>`;
+    listEl.innerHTML = `<li class="basket-item" style="color:#888; justify-content:center; font-style:italic;">Add tips and cables to get started.</li>`;
     countEl.innerText = "0 Items";
     checkoutBtn.disabled = true;
     saveProjectBasketToStorage();
