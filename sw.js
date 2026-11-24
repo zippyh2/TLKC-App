@@ -1,11 +1,10 @@
 const CACHE_PREFIX = 'chiaogoo-workspace-';
-const CACHE_NAME = `${CACHE_PREFIX}v3`;
+const CACHE_NAME = `${CACHE_PREFIX}v4`;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/css/style.css',
   '/manifest.json',
-  '/sw.js',
   '/img/tlkc-logo-192.png',
   '/img/tlkc-logo-512.png',
   '/js/apiQuery.js',
@@ -63,22 +62,22 @@ self.addEventListener('fetch', (event) => {
 
   event.respondWith(
     (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      const cachedResponse = await cache.match(event.request);
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+
       try {
         const networkResponse = await fetch(event.request);
         if (networkResponse && networkResponse.status === 200 && networkResponse.type !== 'opaque') {
-          const cache = await caches.open(CACHE_NAME);
           await cache.put(event.request, networkResponse.clone());
         }
         return networkResponse;
       } catch {
-        const cache = await caches.open(CACHE_NAME);
-        const cachedResponse = await cache.match(event.request);
-        if (cachedResponse) return cachedResponse;
-
         if (event.request.mode === 'navigate') {
           return cache.match('/index.html');
         }
-
         return Response.error();
       }
     })()
