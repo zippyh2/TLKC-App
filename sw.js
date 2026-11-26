@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'chiaogoo-workspace-';
-const CACHE_NAME = `${CACHE_PREFIX}v6`;
+const CACHE_NAME = `${CACHE_PREFIX}v7`;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',

@@ -30,12 +30,15 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = [], isComp
   const continueBtn = document.getElementById("compatibilityContinueBtn");
 
   const hasMissingAdaptors = missingAdaptorKeys.length > 0;
+  const analysis = analyzeProjectBasketCompatibility();
 
-  introEl.textContent = isCompatible
-    ? "Your selected tips and cables are compatible."
-    : hasMissingAdaptors
-      ? "Some parts in your selection may need an adapter."
-      : "Some parts in your selection may not fit together.";
+  introEl.textContent = analysis.hasOnlyTips || analysis.hasOnlyCables
+    ? "Compatibility cannot be checked without both tips and cables."
+    : isCompatible
+      ? "Your selected tips and cables are compatible."
+      : hasMissingAdaptors
+        ? "Some parts in your selection may need an adapter."
+        : "Some parts in your selection may not fit together.";
 
   renderCompatibilityCoverageSummary(coverageEl);
 
@@ -53,7 +56,6 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = [], isComp
 
   renderCompatibilityDetails();
 
-  const analysis = analyzeProjectBasketCompatibility();
   const hasImpossibleOrUnusedItems = analysis.unusedItems.length > 0 ||
     analysis.pairResults.some(pair => pair.status === "fail");
 
@@ -65,6 +67,8 @@ export function openCompatibilityModal(messages, missingAdaptorKeys = [], isComp
       noteEl.textContent = "If you already own the required adapter(s), or you dont need the combinations that require them, continue anyway.\n\nOtherwise, add them here or go back to adjust your selection.";
     } else if (hasMissingAdaptors) {
       noteEl.textContent = "If you already own the required adapter(s), or these parts match ones you already own, continue anyway.\n\nOtherwise, add them here or go back to adjust your selection.";
+    } else if (analysis.hasOnlyTips || analysis.hasOnlyCables) {
+      noteEl.textContent = "If these parts match items you already own, you can continue anyway. Otherwise, go back to adjust your selection.";
     } else {
       noteEl.textContent = "Some selected parts may be for use with other items you already own.\n\nCheck the full compatibility details if you are unsure.";
     }

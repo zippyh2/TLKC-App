@@ -32,6 +32,8 @@ export function analyzeProjectBasketCompatibility() {
   const analysis = {
     ok: true,
     hasTipsAndCables: tips.length > 0 && cables.length > 0,
+    hasOnlyTips: tips.length > 0 && cables.length === 0,
+    hasOnlyCables: cables.length > 0 && tips.length === 0,
     missingAdaptorKeys: [],
     messages: [],
     pairResults: [],
@@ -60,11 +62,25 @@ export function analyzeProjectBasketCompatibility() {
   });
 
   if (!analysis.hasTipsAndCables) {
-    if (analysis.accessoryWarnings.length > 0) {
-      analysis.messages.push(...analysis.accessoryWarnings);
-      analysis.ok = false;
+    if (analysis.hasOnlyTips) {
+      analysis.messages.push("There are no cables in your basket to check against your selected tips.");
+    } else if (analysis.hasOnlyCables) {
+      analysis.messages.push("There are no tips in your basket to check against your selected cables.");
     }
 
+    if (analysis.hasOnlyTips || analysis.hasOnlyCables) {
+      const selectedItems = analysis.hasOnlyTips ? tips : cables;
+      const connectorSizes = [...new Set(selectedItems.map(item => item.conn).filter(Boolean))];
+      if (connectorSizes.length > 1) {
+        analysis.messages.push(`Your selected ${analysis.hasOnlyTips ? "tips" : "cables"} have different connector sizes: ${connectorSizes.join(", ")}. Check that they match the parts you already own.`);
+      }
+    }
+
+    if (analysis.accessoryWarnings.length > 0) {
+      analysis.messages.push(...analysis.accessoryWarnings);
+    }
+
+    analysis.ok = analysis.messages.length === 0;
     return analysis;
   }
 
