@@ -32,7 +32,7 @@ export function redirectProjectToShopify() {
 
   const queryParams = state.projectBasket.map(item => `${item.id}:${item.qty}`).join(",");
 
-  window.top.location.href = SHOPIFY_CART_URL + queryParams;
+  window.top.location.href = SHOPIFY_CART_URL + queryParams + "?attributes[source]=TLKC_app_checkout";
 }
 
 export function continueToShopifyAnyway() {
