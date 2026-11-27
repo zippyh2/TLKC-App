@@ -16,7 +16,7 @@ export const CONNECTOR_RANK = {
 
 export const PROJECT_BASKET_STORAGE_KEY = "chiaoGooProjectBasket";
 
-export const SHOPIFY_CART_URL = "https://www.thelittleknittingcompany.co.uk/cart/";
+export const SHOPIFY_CART_URL = "https://www.thelittleknittingcompany.co.uk/cart/add";
 
 export const SHOPIFY_STORE_URL = "https://www.thelittleknittingcompany.co.uk";
 
