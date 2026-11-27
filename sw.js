@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'chiaogoo-workspace-';
-const CACHE_NAME = `${CACHE_PREFIX}v8`;
+const CACHE_NAME = `${CACHE_PREFIX}v11`;
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -44,6 +44,12 @@ self.addEventListener('activate', (event) => {
       ).then(() => self.clients.claim());
     })
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'GET_CACHE_VERSION' && event.ports[0]) {
+    event.ports[0].postMessage(CACHE_NAME.slice(CACHE_PREFIX.length));
+  }
 });
 
 function isAppAsset(request) {

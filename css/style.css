@@ -68,6 +68,7 @@
         /* Master Checkout Action Trigger */
         .checkout-btn { width: 100%; padding: 14px; background: #228B22; color: #FFF; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; margin-top: 15px; cursor: pointer; box-shadow: 0 4px 10px rgba(34,139,34,0.2); }
         .checkout-btn:disabled { background: #CCCCCC; color: #888888; box-shadow: none; cursor: not-allowed; }
+        .cache-version { margin-top: 16px; text-align: center; font-size: 11px; color: #666666; }
         /* Grouped Product Selection Panels */
         #tips-section-group,
         #cables-section-group,

@@ -154,6 +154,36 @@ function bootWorkspace() {
 window.onload = bootWorkspace;
 
 if ("serviceWorker" in navigator) {
+  const updateCacheVersion = () => {
+    const label = document.getElementById('cacheVersion');
+    const controller = navigator.serviceWorker.controller;
+    label.textContent = 'Version: unavailable';
+    if (!controller) return;
+
+    let receivedVersion = false;
+    if ('caches' in window) {
+      caches.keys().then(names => {
+        const versions = names.filter(name => name.startsWith('chiaogoo-workspace-'));
+        if (!receivedVersion && navigator.serviceWorker.controller === controller && versions.length === 1) {
+          label.textContent = `Version: ${versions[0].slice('chiaogoo-workspace-'.length)}`;
+        }
+      }).catch(() => {});
+    }
+
+    const channel = new MessageChannel();
+    channel.port1.onmessage = event => {
+      if (navigator.serviceWorker.controller === controller) {
+        receivedVersion = true;
+        label.textContent = `Version: ${event.data}`;
+      }
+      channel.port1.close();
+    };
+    controller.postMessage('GET_CACHE_VERSION', [channel.port2]);
+    setTimeout(() => channel.port1.close(), 5000);
+  };
+
+  navigator.serviceWorker.addEventListener('controllerchange', updateCacheVersion);
+  updateCacheVersion();
   navigator.serviceWorker.register("./sw.js").catch(error => {
     console.error("Service worker registration failed:", error);
   });
